@@ -1,282 +1,281 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chicken Day Offer - Crispy Chicken</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+from datetime import datetime, timedelta
+import numpy as np
+import os
+from tabulate import tabulate
+import csv
+
+class SalesDashboard:
+    def __init__(self):
+        self.data = pd.DataFrame(columns=['Date', 'Location', 'Online_Sales', 'Delivery_Sales', 
+                                       'Online_Transactions', 'Delivery_Transactions'])
+        self.locations = ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix', 
+                         'Philadelphia', 'San Antonio', 'San Diego', 'Dallas', 'San Jose']
+        self.colors = plt.cm.Set3(np.linspace(0, 1, len(self.locations)))
         
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #ffefef 0%, #fff5f5 100%);
-            color: #333;
-            line-height: 1.6;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 500px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-        
-        .header {
-            background: linear-gradient(90deg, #c41e3a 0%, #8b0000 100%);
-            color: white;
-            padding: 25px;
-            text-align: center;
-        }
-        
-        .header h1 {
-            font-size: 1.8rem;
-            margin-bottom: 10px;
-        }
-        
-        .header p {
-            font-size: 1rem;
-            opacity: 0.9;
-        }
-        
-        .offer-image {
-            width: 100%;
-            height: 250px;
-            object-fit: cover;
-        }
-        
-        .offer-content {
-            padding: 25px;
-        }
-        
-        .offer-title {
-            font-size: 1.8rem;
-            color: #c41e3a;
-            margin-bottom: 15px;
-            text-align: center;
-            font-weight: 700;
-        }
-        
-        .offer-details {
-            background: #f9f9f9;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        
-        .offer-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        
-        .offer-item:last-child {
-            margin-bottom: 0;
-        }
-        
-        .offer-icon {
-            color: #c41e3a;
-            font-size: 1.5rem;
-            margin-left: 15px;
-            width: 30px;
-            text-align: center;
-        }
-        
-        .offer-text {
-            flex: 1;
-            font-size: 1.1rem;
-        }
-        
-        .price-section {
-            text-align: center;
-            margin: 25px 0;
-        }
-        
-        .price-label {
-            font-size: 1rem;
-            color: #666;
-            margin-bottom: 5px;
-        }
-        
-        .price {
-            font-size: 3rem;
-            color: #c41e3a;
-            font-weight: 700;
-        }
-        
-        .price-currency {
-            font-size: 1.5rem;
-            vertical-align: top;
-        }
-        
-        .cta-section {
-            padding: 0 25px 25px;
-        }
-        
-        .cta-button {
-            display: block;
-            width: 100%;
-            background: linear-gradient(90deg, #c41e3a 0%, #8b0000 100%);
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 50px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            text-align: center;
-            text-decoration: none;
-            margin-bottom: 15px;
-            transition: all 0.3s ease;
-        }
-        
-        .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(196, 30, 58, 0.3);
-        }
-        
-        .whatsapp-button {
-            background: #25D366;
-        }
-        
-        .whatsapp-button:hover {
-            background: #128C7E;
-        }
-        
-        .footer {
-            background: #f5f5f5;
-            padding: 20px;
-            text-align: center;
-            font-size: 0.9rem;
-            color: #777;
-        }
-        
-        .limited-time {
-            background: #ffcc00;
-            color: #333;
-            padding: 8px 15px;
-            border-radius: 30px;
-            font-weight: 600;
-            display: inline-block;
-            margin-bottom: 15px;
-        }
-        
-        .share-section {
-            padding: 0 25px 25px;
-            text-align: center;
-        }
-        
-        .share-button {
-            display: inline-block;
-            background: #f0f0f0;
-            color: #333;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-size: 1rem;
-            margin: 0 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .share-button:hover {
-            background: #e0e0e0;
-        }
-        
-        .share-button i {
-            margin-left: 8px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>CHICKEN DAY OFFER</h1>
-            <p>Special deal for chicken lovers!</p>
-        </div>
-        
-        <img src="https://z-cdn-media.chatglm.cn/files/244912b0-7402-442e-91ae-0f383a833695_ce20e7b6-49a3-441e-97b8-461df91e32c9.jpeg?auth_key=1789259855-3360c02ba8604b398100744ac25b7cdd-0-80eb882b63b7293389603641eaab408e" alt="Chicken Day Offer" class="offer-image">
-        
-        <div class="offer-content">
-            <div class="limited-time">
-                <i class="fas fa-clock"></i> Limited Time Offer
-            </div>
+    def run(self):
+        while True:
+            self.display_menu()
+            choice = input("\nEnter your choice (1-5): ")
             
-            <h2 class="offer-title">8 Pieces Crispy Chicken</h2>
-            
-            <div class="offer-details">
-                <div class="offer-item">
-                    <div class="offer-icon"><i class="fas fa-drumstick-bite"></i></div>
-                    <div class="offer-text">8 pieces of crispy chicken</div>
-                </div>
-                <div class="offer-item">
-                    <div class="offer-icon"><i class="fas fa-pepper-hot"></i></div>
-                    <div class="offer-text">2 garlic sauce</div>
-                </div>
-                <div class="offer-item">
-                    <div class="offer-icon"><i class="fas fa-users"></i></div>
-                    <div class="offer-text">Perfect for sharing</div>
-                </div>
-            </div>
-            
-            <div class="price-section">
-                <div class="price-label">Special Price</div>
-                <div class="price"><span class="price-currency">AED</span>20</div>
-            </div>
-        </div>
-        
-        <div class="cta-section">
-            <a href="tel:600527488" class="cta-button">Order Now: 600527488</a>
-            <a href="https://wa.me/971600527488?text=I'm%20interested%20in%20the%20Chicken%20Day%20Offer%20(8%20pieces%20for%2020%20AED)" class="cta-button whatsapp-button">
-                <i class="fab fa-whatsapp"></i> Order via WhatsApp
-            </a>
-        </div>
-        
-        <div class="share-section">
-            <p style="margin-bottom: 15px; color: #666;">Share this offer:</p>
-            <button class="share-button" onclick="shareOnWhatsApp()">
-                <i class="fab fa-whatsapp"></i> WhatsApp
-            </button>
-            <button class="share-button" onclick="copyLink()">
-                <i class="fas fa-copy"></i> Copy Link
-            </button>
-        </div>
-        
-        <div class="footer">
-            <p>© 2025 Crispy Chicken UAE. All rights reserved.</p>
-            <p>Call us: 600527488 | Available daily 11 AM-3 AM</p>
-        </div>
-    </div>
+            if choice == '1':
+                self.load_sample_data()
+            elif choice == '2':
+                self.add_data()
+            elif choice == '3':
+                self.show_comprehensive_report()
+            elif choice == '4':
+                self.export_to_csv()
+            elif choice == '5':
+                print("\nThank you for using the Sales Dashboard!")
+                break
+            else:
+                print("\nInvalid choice. Please try again.")
     
-    <script>
-        function shareOnWhatsApp() {
-            const message = "🍗 CHICKEN DAY OFFER! 🍗\n\n8 pieces of crispy chicken + 2 garlic sauce = ONLY 20 AED! 🤩\n\nOrder now: 600527488\n\nLimited time offer! Don't miss out! ⏰\n\n#CrispyChicken #ChickenDay #SpecialOffer";
-            const url = `https://wa.me/?text=${encodeURIComponent(message)}`;
-            window.open(url, '_blank');
+    def display_menu(self):
+        print("\n" + "="*50)
+        print("          SALES DASHBOARD".center(50))
+        print("="*50)
+        print("\n1. Load Sample Data")
+        print("2. Add Your Own Data")
+        print("3. View Comprehensive Report with Visualizations")
+        print("4. Export Data to CSV")
+        print("5. Exit")
+        print("="*50)
+    
+    def load_sample_data(self):
+        print("\nLoading sample data...")
+        sample_data = [
+            ['01/01/2024', 'New York', 12000, 8000, 240, 160],
+            ['01/01/2024', 'Los Angeles', 15000, 10000, 300, 200],
+            ['02/01/2024', 'New York', 13500, 8500, 270, 170],
+            ['02/01/2024', 'Chicago', 11000, 9000, 220, 180],
+            ['03/01/2024', 'Los Angeles', 16000, 11000, 320, 220],
+            ['03/01/2024', 'Chicago', 12000, 9500, 240, 190],
+            ['01/01/2024', 'Chicago', 10000, 8500, 200, 170],
+            ['01/01/2024', 'Houston', 9000, 7500, 180, 150],
+            ['02/01/2024', 'Houston', 9500, 8000, 190, 160],
+            ['03/01/2024', 'Houston', 10500, 8500, 210, 170],
+            ['01/01/2024', 'Phoenix', 8000, 7000, 160, 140],
+            ['02/01/2024', 'Phoenix', 8500, 7500, 170, 150],
+            ['03/01/2024', 'Phoenix', 9000, 8000, 180, 160]
+        ]
+        
+        self.data = pd.DataFrame(sample_data, columns=self.data.columns)
+        self.data['Date'] = pd.to_datetime(self.data['Date'], format='%d/%m/%Y')
+        print(f"Sample data loaded successfully! {len(self.data)} records added.")
+    
+    def add_data(self):
+        print("\n--- Add New Data ---")
+        
+        # Date input with validation
+        while True:
+            date_str = input("Enter date (DD/MM/YYYY): ")
+            try:
+                date = datetime.strptime(date_str, '%d/%m/%Y')
+                break
+            except ValueError:
+                print("Invalid date format. Please use DD/MM/YYYY.")
+        
+        # Location selection
+        print("\nAvailable locations:")
+        for i, loc in enumerate(self.locations, 1):
+            print(f"{i}. {loc}")
+        
+        while True:
+            loc_choice = input(f"\nSelect location (1-{len(self.locations)}): ")
+            try:
+                loc_idx = int(loc_choice) - 1
+                if 0 <= loc_idx < len(self.locations):
+                    location = self.locations[loc_idx]
+                    break
+                else:
+                    print("Invalid choice. Please try again.")
+            except ValueError:
+                print("Please enter a number.")
+        
+        # Sales data input with validation
+        def get_positive_input(prompt, field_name):
+            while True:
+                try:
+                    value = float(input(prompt))
+                    if value >= 0:
+                        return value
+                    else:
+                        print(f"Please enter a positive value for {field_name}.")
+                except ValueError:
+                    print("Invalid input. Please enter a number.")
+        
+        online_sales = get_positive_input("Enter online sales amount: ", "Online Sales")
+        delivery_sales = get_positive_input("Enter delivery sales amount: ", "Delivery Sales")
+        online_trans = get_positive_input("Enter online transaction count: ", "Online Transactions")
+        delivery_trans = get_positive_input("Enter delivery transaction count: ", "Delivery Transactions")
+        
+        # Add data to DataFrame
+        new_row = {
+            'Date': date,
+            'Location': location,
+            'Online_Sales': online_sales,
+            'Delivery_Sales': delivery_sales,
+            'Online_Transactions': online_trans,
+            'Delivery_Transactions': delivery_trans
         }
         
-        function copyLink() {
-            const dummy = document.createElement('input');
-            document.body.appendChild(dummy);
-            dummy.value = window.location.href;
-            dummy.select();
-            document.execCommand('copy');
-            document.body.removeChild(dummy);
-            
-            const button = event.target;
-            const originalText = button.innerHTML;
-            button.innerHTML = '<i class="fas fa-check"></i> Copied!';
-            setTimeout(() => {
-                button.innerHTML = originalText;
-            }, 2000);
-        }
-    </script>
-</body>
-</html>
+        self.data = pd.concat([self.data, pd.DataFrame([new_row])], ignore_index=True)
+        self.data['Date'] = pd.to_datetime(self.data['Date'])
+        
+        print(f"\nData added successfully for {location} on {date_str}!")
+        print(f"Online Sales: ${online_sales:,.2f}, Delivery Sales: ${delivery_sales:,.2f}")
+        print(f"Online Transactions: {int(online_trans)}, Delivery Transactions: {int(delivery_trans)}")
+    
+    def show_comprehensive_report(self):
+        if self.data.empty:
+            print("\nNo data available. Please load sample data or add your own data first.")
+            return
+        
+        print("\n" + "="*60)
+        print("          COMPREHENSIVE SALES REPORT".center(60))
+        print("="*60)
+        
+        # Overall Sales Summary
+        total_online = self.data['Online_Sales'].sum()
+        total_delivery = self.data['Delivery_Sales'].sum()
+        total_sales = total_online + total_delivery
+        total_online_trans = self.data['Online_Transactions'].sum()
+        total_delivery_trans = self.data['Delivery_Transactions'].sum()
+        
+        print("\n--- Overall Sales Summary ---")
+        print(f"Total Online Sales: ${total_online:,.2f}")
+        print(f"Total Delivery Sales: ${total_delivery:,.2f}")
+        print(f"Total Sales: ${total_sales:,.2f}")
+        print(f"Online Sales Percentage: {(total_online/total_sales)*100:.1f}%")
+        print(f"Delivery Sales Percentage: {(total_delivery/total_sales)*100:.1f}%")
+        print(f"Average Online Transaction Value: ${total_online/total_online_trans:,.2f}")
+        print(f"Average Delivery Transaction Value: ${total_delivery/total_delivery_trans:,.2f}")
+        
+        # Location-wise Analysis
+        print("\n--- Location-wise Analysis ---")
+        location_sales = self.data.groupby('Location').agg({
+            'Online_Sales': 'sum',
+            'Delivery_Sales': 'sum',
+            'Online_Transactions': 'sum',
+            'Delivery_Transactions': 'sum'
+        }).reset_index()
+        
+        location_sales['Total_Sales'] = location_sales['Online_Sales'] + location_sales['Delivery_Sales']
+        location_sales = location_sales.sort_values('Total_Sales', ascending=False)
+        
+        print(tabulate(location_sales, headers='keys', tablefmt='grid', 
+                      showindex=False, floatfmt=',.2f'))
+        
+        # Daily Breakdown
+        print("\n--- Daily Breakdown ---")
+        daily_sales = self.data.groupby('Date').agg({
+            'Online_Sales': 'sum',
+            'Delivery_Sales': 'sum'
+        }).reset_index()
+        daily_sales['Total_Sales'] = daily_sales['Online_Sales'] + daily_sales['Delivery_Sales']
+        
+        print(tabulate(daily_sales, headers='keys', tablefmt='grid', 
+                      showindex=False, floatfmt=',.2f'))
+        
+        # Generate Visualizations
+        self.generate_visualizations()
+    
+    def generate_visualizations(self):
+        print("\nGenerating visualizations...")
+        
+        # Create figure with subplots
+        fig = plt.figure(figsize=(20, 15))
+        
+        # 1. Sales by Location (Bar Chart)
+        ax1 = plt.subplot(3, 2, 1)
+        location_sales = self.data.groupby('Location')['Online_Sales', 'Delivery_Sales'].sum()
+        location_sales.plot(kind='bar', ax=ax1, width=0.8)
+        ax1.set_title('Sales by Location', fontsize=14, fontweight='bold')
+        ax1.set_xlabel('Location')
+        ax1.set_ylabel('Sales ($)')
+        ax1.tick_params(axis='x', rotation=45)
+        ax1.grid(True, alpha=0.3)
+        
+        # 2. Online vs Delivery Sales Comparison
+        ax2 = plt.subplot(3, 2, 2)
+        total_online = self.data['Online_Sales'].sum()
+        total_delivery = self.data['Delivery_Sales'].sum()
+        ax2.pie([total_online, total_delivery], labels=['Online', 'Delivery'], 
+                autopct='%1.1f%%', startangle=90, colors=['#4CAF50', '#2196F3'])
+        ax2.set_title('Online vs Delivery Sales Comparison', fontsize=14, fontweight='bold')
+        
+        # 3. Transaction Distribution (Pie Chart)
+        ax3 = plt.subplot(3, 2, 3)
+        total_online_trans = self.data['Online_Transactions'].sum()
+        total_delivery_trans = self.data['Delivery_Transactions'].sum()
+        ax3.pie([total_online_trans, total_delivery_trans], 
+                labels=['Online Transactions', 'Delivery Transactions'],
+                autopct='%1.1f%%', startangle=90, colors=['#FF9800', '#9C27B0'])
+        ax3.set_title('Transaction Distribution', fontsize=14, fontweight='bold')
+        
+        # 4. Average Sale Value Analysis
+        ax4 = plt.subplot(3, 2, 4)
+        avg_online = self.data['Online_Sales'] / self.data['Online_Transactions']
+        avg_delivery = self.data['Delivery_Sales'] / self.data['Delivery_Transactions']
+        ax4.bar(['Online', 'Delivery'], [avg_online.mean(), avg_delivery.mean()], 
+                color=['#4CAF50', '#2196F3'])
+        ax4.set_title('Average Transaction Value', fontsize=14, fontweight='bold')
+        ax4.set_ylabel('Average Value ($)')
+        ax2.grid(True, alpha=0.3)
+        
+        # 5. Sales Trend Over Time
+        ax5 = plt.subplot(3, 2, 5)
+        daily_trend = self.data.groupby('Date').agg({
+            'Online_Sales': 'sum',
+            'Delivery_Sales': 'sum'
+        }).reset_index()
+        ax5.plot(daily_trend['Date'], daily_trend['Online_Sales'], 
+                marker='o', label='Online Sales', linewidth=2, markersize=6)
+        ax5.plot(daily_trend['Date'], daily_trend['Delivery_Sales'], 
+                marker='s', label='Delivery Sales', linewidth=2, markersize=6)
+        ax5.set_title('Sales Trend Over Time', fontsize=14, fontweight='bold')
+        ax5.set_xlabel('Date')
+        ax5.set_ylabel('Sales ($)')
+        ax5.legend()
+        ax5.grid(True, alpha=0.3)
+        ax5.xaxis.set_major_formatter(mdates.DateFormatter('%d/%m'))
+        
+        # 6. Channel Comparison by Location
+        ax6 = plt.subplot(3, 2, 6)
+        channel_comparison = self.data.groupby('Location').agg({
+            'Online_Sales': 'sum',
+            'Delivery_Sales': 'sum'
+        })
+        channel_comparison.plot(kind='bar', ax=ax6, width=0.7)
+        ax6.set_title('Channel Comparison by Location', fontsize=14, fontweight='bold')
+        ax6.set_xlabel('Location')
+        ax6.set_ylabel('Sales ($)')
+        ax6.tick_params(axis='x', rotation=45)
+        ax6.grid(True, alpha=0.3)
+        
+        plt.tight_layout()
+        plt.show()
+        
+        print("\nVisualizations generated successfully!")
+    
+    def export_to_csv(self):
+        if self.data.empty:
+            print("\nNo data to export.")
+            return
+        
+        filename = f"sales_data_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+        self.data.to_csv(filename, index=False, date_format='%d/%m/%Y')
+        print(f"\nData exported successfully to {filename}")
+        
+        # Show a preview of the exported data
+        print("\nExported data preview:")
+        print(tabulate(self.data.head(), headers='keys', tablefmt='grid', showindex=False))
+
+# Run the dashboard
+if __name__ == "__main__":
+    dashboard = SalesDashboard()
+    dashboard.run()
